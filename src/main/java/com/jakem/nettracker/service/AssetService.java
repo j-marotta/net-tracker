@@ -54,7 +54,7 @@ public class AssetService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    @org.springframework.scheduling.annotation.Scheduled(fixedRateString = "PT15M")
+    @org.springframework.scheduling.annotation.Scheduled(fixedRateString = "PT1M")
     @jakarta.transaction.Transactional
     public void refreshPrices() {
         assetRepository.findAll().forEach(asset -> {
@@ -78,7 +78,8 @@ public class AssetService {
         a.setName(dto.getName());
         a.setCategory(dto.getCategory());
         a.setUnits(dto.getUnits());
-        a.setUnitValue(dto.getUnitValue());
+        a.setPurchasePrice(dto.getPurchasePrice());
+        a.setUnitValue(dto.getPurchasePrice());
         return a;
     }
 }

@@ -25,6 +25,8 @@ public class Asset {
 
     private BigDecimal unitValue;
 
+    private BigDecimal purchasePrice;
+
     private LocalDateTime updated;
 
     @PrePersist
