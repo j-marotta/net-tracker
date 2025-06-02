@@ -22,5 +22,6 @@ public class AssetRequest {
     @PositiveOrZero(message = "Unit value must be at least zero")
     BigDecimal unitValue;
 
-
+    @PositiveOrZero(message = "Purchase price must be at least zero")
+    BigDecimal purchasePrice;
 }

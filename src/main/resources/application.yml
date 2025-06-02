@@ -5,3 +5,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
+price:
+  api:
+    base: https://finnhub.io/api/v1/quote
+    key: d0uun19r01qmg3uj5fi0d0uun19r01qmg3uj5fig
