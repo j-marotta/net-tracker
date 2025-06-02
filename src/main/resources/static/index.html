@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Net‑Worth Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+        th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+        th { background: #f4f4f4; }
+        form input { margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        button { cursor: pointer; }
+        .error { color: red; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+<h1>Net‑Worth Tracker</h1>
+
+<h2>Current Net Worth: $<span id="networth">0</span></h2>
+
+<h3>Add Asset</h3>
+<form id="assetForm">
+    <input type="text" id="name" placeholder="Name (e.g. VTI)" required />
+    <input type="text" id="category" placeholder="Category (STOCK/CRYPTO)" required />
+    <input type="number" step="any" id="units" placeholder="Units" required />
+    <input type="number" step="any" id="unitValue" placeholder="Unit Value" required />
+    <button type="submit">Add</button>
+</form>
+<div id="error" class="error"></div>
+
+<h3>Assets</h3>
+<table>
+    <thead>
+    <tr><th>Name</th><th>Category</th><th>Units</th><th>Unit Value</th><th>Updated</th><th>Actions</th></tr>
+    </thead>
+    <tbody id="assetRows"></tbody>
+</table>
+
+<script>
+    const rows = document.getElementById('assetRows');
+    const networthEl = document.getElementById('networth');
+    const errorEl   = document.getElementById('error');
+
+    async function loadAssets() {
+        const res = await fetch('/api/assets');
+        const assets = await res.json();
+        rows.innerHTML = '';
+        assets.forEach(a => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `\n          <td>${a.name}</td>\n          <td>${a.category}</td>\n          <td>${a.units}</td>\n          <td>${a.unitValue}</td>\n          <td>${a.updated ? a.updated.replace('T',' ').split('.')[0] : ''}</td>\n          <td><button data-id="${a.id}">Delete</button></td>`;
+            tr.querySelector('button').addEventListener('click', () => removeAsset(a.id));
+            rows.appendChild(tr);
+        });
+    }
+
+    async function loadNetworth() {
+        const res = await fetch('/api/assets/networth');
+        const total = await res.text();
+        networthEl.textContent = Number(total).toLocaleString(undefined,{maximumFractionDigits:2});
+    }
+
+    async function removeAsset(id){
+        await fetch('/api/assets/'+id, {method:'DELETE'});
+        await loadAssets();
+        await loadNetworth();
+    }
+
+    document.getElementById('assetForm').addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        errorEl.textContent='';
+        const body = {
+            name: document.getElementById('name').value,
+            category: document.getElementById('category').value,
+            units: document.getElementById('units').value,
+            unitValue: document.getElementById('unitValue').value
+        };
+        const res = await fetch('/api/assets', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(body)
+        });
+        if(res.ok){
+            e.target.reset();
+            await loadAssets();
+            await loadNetworth();
+        } else {
+            const data = await res.json().catch(()=>null);
+            errorEl.textContent = (data && data.errors) ? JSON.stringify(data.errors) : 'Error adding asset';
+        }
+    });
+
+    // initial load
+    loadAssets();
+    loadNetworth();
+</script>
+</body>
+</html>
