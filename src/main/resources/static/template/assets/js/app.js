@@ -2,6 +2,7 @@ const api = "/api/assets";
 const rows   = document.getElementById("assetRows");
 const netDOM = document.getElementById("networth");
 const form   = document.getElementById("assetForm");
+const errorBox = document.getElementById("error");
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
 
@@ -48,20 +49,57 @@ async function updateNetWorth () {
 
 form.addEventListener("submit", async e => {
     e.preventDefault();
+    errorBox.textContent = "";
+
     const body = {
         name:         $("#name").value.trim().toUpperCase(),
         category:     $("#category").value,
         units:        Number($("#units").value),
         purchasePrice:Number($("#purchasePrice").value)
     };
-    await fetch(api, {
-        method: "POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify(body)
-    });
-    form.reset();
-    loadAssets();
+
+    try {
+        const res = await fetch("/api/assets", {
+            method: "POST",
+            headers:{ "Content-Type":"application/json" },
+            body: JSON.stringify(body)
+        });
+
+        if (!res.ok) {
+            const txt = await res.text();
+            throw new Error(txt || "Server error");
+        }
+
+        form.reset();
+        loadAssets();
+    } catch (err) {
+        showToast(err.message || "Something went wrong");
+    }
 });
+
+function showToast(message, ms = 4000) {
+    const toast = document.getElementById("toast");
+    const msg   = document.getElementById("toast-msg");
+    const bar   = document.getElementById("toast-progress");
+
+    msg.textContent = message;
+    toast.classList.remove("hidden");
+
+    bar.style.transition = "none";
+    bar.style.width = "100%";
+    void bar.offsetWidth;                  // re-flow
+    bar.style.transition = `width ${ms}ms linear`;
+    bar.style.width = "0%";
+
+    const hide = () => {
+        toast.classList.add("hidden");
+        bar.style.transition = "none";
+        toast.removeEventListener("click", hide);
+    };
+    setTimeout(hide, ms);
+    toast.addEventListener("click", hide);
+}
+
 
 function attachDeleteHandlers () {
     rows.querySelectorAll(".delete").forEach(btn =>

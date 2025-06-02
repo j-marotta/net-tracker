@@ -1,11 +1,13 @@
 package com.jakem.nettracker.service;
 
-
 import com.jakem.nettracker.Asset;
 import com.jakem.nettracker.AssetRepository;
 import com.jakem.nettracker.AssetRequest;
+import com.jakem.nettracker.exception.InvalidTickerException;
+import com.jakem.nettracker.pricing.PriceClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,11 +18,13 @@ import java.util.List;
 public class AssetService {
 
     private final AssetRepository assetRepository;
-
-    private final PriceClient priceClient;
+    private final PriceClient     priceClient;          // inject interface
 
     @Transactional
     public Asset create(AssetRequest dto) {
+        if (priceClient.quote(dto.getName()).isEmpty())
+            throw new InvalidTickerException(dto.getName());
+
         Asset asset = map(dto);
         return assetRepository.save(asset);
     }
@@ -44,34 +48,28 @@ public class AssetService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        assetRepository.deleteById(id);
-    }
+    public void delete(Long id) { assetRepository.deleteById(id); }
 
     public BigDecimal totalNetWorth() {
         return assetRepository.findAll().stream()
-                .map(asset -> asset.getUnits().multiply(asset.getUnitValue()))
+                .map(a -> a.getUnits().multiply(a.getUnitValue()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    @org.springframework.scheduling.annotation.Scheduled(fixedRateString = "PT1M")
-    @jakarta.transaction.Transactional
+    @Scheduled(fixedRateString = "PT1M")
+    @Transactional
     public void refreshPrices() {
         assetRepository.findAll().forEach(asset -> {
-            // only update categories that have market prices
-            if ("STOCK".equalsIgnoreCase(asset.getCategory()) ||
-                    "CRYPTO".equalsIgnoreCase(asset.getCategory())) {
+            if ("STOCK".equalsIgnoreCase(asset.getCategory())
+                    || "CRYPTO".equalsIgnoreCase(asset.getCategory())) {
 
-                try {
-                    BigDecimal price = priceClient.latestPrice(asset.getName());
+                priceClient.quote(asset.getName()).ifPresent(price -> {
                     asset.setUnitValue(price);
-                } catch (Exception ex) {
-                    System.err.println("Price fetch failed for " + asset.getName());
-                }
+                    asset.setUpdated(java.time.LocalDateTime.now());
+                });
             }
         });
     }
-
 
     private static Asset map(AssetRequest dto) {
         Asset a = new Asset();

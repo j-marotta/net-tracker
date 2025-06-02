@@ -77,7 +77,9 @@
 			text-align: center;
 		}
 
-
+		#toast {
+			z-index: 9999 !important;
+		}
 
 	</style>
 </head>
@@ -186,6 +188,16 @@
 
 	<footer id="footer"><p>&copy; 2025 Net-Worth Tracker.</p></footer>
 </div>
+
+<div id="toast"
+	 class="hidden fixed top-6 left-1/2 -translate-x-1/2
+            bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg
+            w-[22rem] max-w-[90vw]">
+	<span id="toast-msg"></span>
+	<div id="toast-progress"
+		 class="absolute left-0 bottom-0 h-1 bg-red-400 w-full"></div>
+</div>
+
 
 <div id="bg"></div>
 <div id="bgOverlay"></div>
