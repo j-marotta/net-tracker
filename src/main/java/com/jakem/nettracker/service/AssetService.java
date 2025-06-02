@@ -17,6 +17,8 @@ public class AssetService {
 
     private final AssetRepository assetRepository;
 
+    private final PriceClient priceClient;
+
     @Transactional
     public Asset create(AssetRequest dto) {
         Asset asset = map(dto);
@@ -50,6 +52,24 @@ public class AssetService {
         return assetRepository.findAll().stream()
                 .map(asset -> asset.getUnits().multiply(asset.getUnitValue()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    @org.springframework.scheduling.annotation.Scheduled(fixedRateString = "PT15M")
+    @jakarta.transaction.Transactional
+    public void refreshPrices() {
+        assetRepository.findAll().forEach(asset -> {
+            // only update categories that have market prices
+            if ("STOCK".equalsIgnoreCase(asset.getCategory()) ||
+                    "CRYPTO".equalsIgnoreCase(asset.getCategory())) {
+
+                try {
+                    BigDecimal price = priceClient.latestPrice(asset.getName());
+                    asset.setUnitValue(price);
+                } catch (Exception ex) {
+                    System.err.println("Price fetch failed for " + asset.getName());
+                }
+            }
+        });
     }
 
 
