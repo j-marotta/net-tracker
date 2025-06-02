@@ -24,10 +24,13 @@ public class FinnhubPriceClient implements PriceClient {
     }
 
     @Override
-    public Optional<BigDecimal> quote(String symbol) {
+    public Optional<BigDecimal> quote(String symbol, String category) {
+
+        boolean isCrypto = "CRYPTO".equalsIgnoreCase(category);
+        String apiSymbol = toFinnhubSymbol(symbol, isCrypto);
 
         JsonNode json = web.get()
-                .uri(uri -> uri.queryParam("symbol", symbol)
+                .uri(uri -> uri.queryParam("symbol", apiSymbol)
                         .queryParam("token", apiKey)
                         .build())
                 .retrieve()
@@ -49,4 +52,15 @@ public class FinnhubPriceClient implements PriceClient {
         return quote(symbol).orElseThrow(
                 () -> new IllegalArgumentException("Ticker not found: " + symbol));
     }
+
+    private static String toFinnhubSymbol(String raw, boolean isCrypto) {
+        if (!isCrypto) return raw;                       // STOCK, CASH, OTHER
+
+        String base = raw.trim().toUpperCase();
+        if (base.endsWith("USD") || base.contains(":"))  // user already typed a pair
+            return base;
+
+        return "BINANCE:" + base + "USDT";
+    }
+
 }
