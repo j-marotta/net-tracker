@@ -18,7 +18,7 @@ import java.util.List;
 public class AssetService {
 
     private final AssetRepository assetRepository;
-    private final PriceClient     priceClient;          // inject interface
+    private final PriceClient     priceClient;
 
     @Transactional
     public Asset create(AssetRequest dto) {

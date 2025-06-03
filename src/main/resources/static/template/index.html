@@ -12,75 +12,23 @@
 
 	<style>
 		html { font-family: "Source Sans Pro", sans-serif; }
-
-		#bg        { filter: brightness(.75) saturate(.75) blur(2px); }
-		#bgOverlay { position:fixed;inset:0;
-			background:linear-gradient(to bottom,
-			rgba(10,12,20,.85) 0%,
-			rgba(10,12,20,.40) 45%,
-			rgba(10,12,20,0)   75%);
-			pointer-events:none;z-index:-1; }
-
-		#header .logo{
-			width:5em;height:5em;display:flex;align-items:center;justify-content:center;
-		}
-		#header .logo .icon{ font-size:2.4em;line-height:1;transform:none !important; }
-
+		#bg { filter: brightness(.75) saturate(.75) blur(2px); }
+		#bgOverlay { position:fixed;inset:0;background:linear-gradient(to bottom,rgba(10,12,20,.85) 0%,rgba(10,12,20,.40) 45%,rgba(10,12,20,0) 75%);pointer-events:none;z-index:-1; }
+		#header .logo{ width:5em;height:5em;display:flex;align-items:center;justify-content:center; }
+		#header .logo .icon{ font-size:2.4em;line-height:1;transform:none!important; }
 		#header nav{ width:100%; }
-		#header nav>ul{
-			display:flex;justify-content:center;max-width:60rem;margin:0 auto;
-			border:2px solid transparent;
-		}
-		#header nav ul li{
-			flex:1 1 0;min-width:8rem;
-			display:flex;align-items:center;justify-content:center;
-			border-left:2px solid currentColor;
-		}
+		#header nav>ul{ display:flex;justify-content:center;max-width:60rem;margin:0 auto;border:2px solid transparent; }
+		#header nav ul li{ flex:1 1 0;min-width:8rem;display:flex;align-items:center;justify-content:center;border-left:2px solid currentColor; }
 		#header nav ul li:first-child{ border-left:0; }
 		#header nav ul{ border:2px solid #fff;border-radius:4px; }
-		#header nav ul li a{
-			display:block;
-			font-size:1.15em;
-			letter-spacing:.04em;
-			padding:0.95em 0;
-			white-space:nowrap;
-			width:100%;text-align:center;
-		}
-
-		#header nav ul li a { line-height: 0.5 !important; }
-
-		#portfolio > section,
-		#portfolioApp {
-			width: 100%;
-			max-width: 70rem;
-		}
-
-		#portfolioApp .overflow-x-auto {
-			overflow-x: hidden;
-			overflow-y: auto;
-		}
-
-		#portfolioApp table {
-			width: 100%;
-			table-layout: fixed;
-		}
-
-		#portfolioApp table th:nth-last-child(2),
-		#portfolioApp table td:nth-last-child(2) {
-			width: 8rem;
-			white-space: nowrap;
-		}
-
-		#portfolioApp table th:last-child,
-		#portfolioApp table td:last-child {
-			width: 3.5rem;
-			text-align: center;
-		}
-
-		#toast {
-			z-index: 9999 !important;
-		}
-
+		#header nav ul li a{ display:block;font-size:1.15em;letter-spacing:.04em;padding:0.95em 0;white-space:nowrap;width:100%;text-align:center; }
+		#header nav ul li a{ line-height:0.5!important; }
+		#portfolio > section,#portfolioApp{ width:100%;max-width:70rem; }
+		#portfolioApp .overflow-x-auto{ overflow-x:hidden;overflow-y:auto; }
+		#portfolioApp table{ width:100%;table-layout:fixed; }
+		#portfolioApp table th:nth-last-child(2),#portfolioApp table td:nth-last-child(2){ width:8rem;white-space:nowrap; }
+		#portfolioApp table th:last-child,#portfolioApp table td:last-child{ width:3.5rem;text-align:center; }
+		#toast{ z-index:9999!important; }
 	</style>
 </head>
 
@@ -90,14 +38,12 @@
 
 	<header id="header">
 		<div class="logo"><span class="icon solid fa-dollar-sign"></span></div>
-
 		<div class="content">
 			<div class="inner">
 				<h1>Net-Worth Tracker</h1>
-				<p>A web app to help visualise and track all your assets in real time.</p>
+				<p>Add your stocks and other assets, then watch prices update automatically.</p>
 			</div>
 		</div>
-
 		<nav>
 			<ul>
 				<li><a href="#intro">Home</a></li>
@@ -112,39 +58,24 @@
 
 		<article id="intro">
 			<h2 class="major">Welcome</h2>
-			<p>Add your stocks, crypto and other assets in <em>Your Portfolio</em> and
-				let live prices update automatically.</p>
+			<p>Track your equity holdings and cash positions in real time.</p>
 		</article>
 
 		<article id="portfolio">
 			<h2 class="major">Your Portfolio</h2>
 
-			<section id="portfolioApp"
-					 class="backdrop-blur-sm bg-white/5 border border-white/20 rounded-xl
-                      p-8 md:p-10 w-full text-gray-100 shadow-lg">
+			<section id="portfolioApp" class="backdrop-blur-sm bg-white/5 border border-white/20 rounded-xl p-8 md:p-10 w-full text-gray-100 shadow-lg">
 
 				<form id="assetForm" class="grid gap-4 md:grid-cols-2 mb-6">
-					<input id="name" type="text" placeholder="Ticker (e.g. VTI)" required
-						   class="w-full bg-white/10 border border-white/20 rounded-md p-2
-                        placeholder-gray-400 focus:outline-none"/>
-					<select id="category"
-							class="w-full bg-white/10 border border-white/20 rounded-md p-2
-                         focus:outline-none">
+					<input id="name" type="text" placeholder="Ticker (e.g. VTI)" required class="w-full bg-white/10 border border-white/20 rounded-md p-2 placeholder-gray-400 focus:outline-none"/>
+					<select id="category" class="w-full bg-white/10 border border-white/20 rounded-md p-2 focus:outline-none">
 						<option value="STOCK">Stock</option>
-						<option value="CRYPTO">Crypto</option>
 						<option value="CASH">Cash</option>
 						<option value="OTHER">Other</option>
 					</select>
-					<input id="units" type="number" step="any" placeholder="Qty" required
-						   class="w-full bg-white/10 border border-white/20 rounded-md p-2
-                        placeholder-gray-400 focus:outline-none"/>
-					<input id="purchasePrice" type="number" step="any"
-						   placeholder="Purchase Price" required
-						   class="w-full bg-white/10 border border-white/20 rounded-md p-2
-                        placeholder-gray-400 focus:outline-none"/>
-					<button type="submit" class="md:col-span-2 button primary fit">
-						Add Asset
-					</button>
+					<input id="units" type="number" step="any" placeholder="Qty" required class="w-full bg-white/10 border border-white/20 rounded-md p-2 placeholder-gray-400 focus:outline-none"/>
+					<input id="purchasePrice" type="number" step="any" placeholder="Purchase Price" required class="w-full bg-white/10 border border-white/20 rounded-md p-2 placeholder-gray-400 focus:outline-none"/>
+					<button type="submit" class="md:col-span-2 button primary fit">Add Asset</button>
 				</form>
 
 				<p id="error" class="text-red-500 mb-4"></p>
@@ -176,7 +107,7 @@
 
 		<article id="about">
 			<h2 class="major">About</h2>
-			<p>This open-source Spring Boot app fetches live prices and shows your wealth growth over time.</p>
+			<p>This open-source Spring Boot app keeps equity prices in sync and shows your wealth growth.</p>
 		</article>
 
 		<article id="contact">
@@ -189,15 +120,10 @@
 	<footer id="footer"><p>&copy; 2025 Net-Worth Tracker.</p></footer>
 </div>
 
-<div id="toast"
-	 class="hidden fixed top-6 left-1/2 -translate-x-1/2
-            bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg
-            w-[22rem] max-w-[90vw]">
+<div id="toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg w-[22rem] max-w-[90vw]">
 	<span id="toast-msg"></span>
-	<div id="toast-progress"
-		 class="absolute left-0 bottom-0 h-1 bg-red-400 w-full"></div>
+	<div id="toast-progress" class="absolute left-0 bottom-0 h-1 bg-red-400 w-full"></div>
 </div>
-
 
 <div id="bg"></div>
 <div id="bgOverlay"></div>

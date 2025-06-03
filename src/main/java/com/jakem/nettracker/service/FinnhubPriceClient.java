@@ -54,10 +54,10 @@ public class FinnhubPriceClient implements PriceClient {
     }
 
     private static String toFinnhubSymbol(String raw, boolean isCrypto) {
-        if (!isCrypto) return raw;                       // STOCK, CASH, OTHER
+        if (!isCrypto) return raw;
 
         String base = raw.trim().toUpperCase();
-        if (base.endsWith("USD") || base.contains(":"))  // user already typed a pair
+        if (base.endsWith("USD") || base.contains(":"))
             return base;
 
         return "BINANCE:" + base + "USDT";
