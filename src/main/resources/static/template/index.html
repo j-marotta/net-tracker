@@ -4,12 +4,9 @@
 	<meta charset="utf-8" />
 	<title>Net-Worth Tracker</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-
 	<link rel="stylesheet" href="assets/css/main.css" />
 	<noscript><link rel="stylesheet" href="assets/css/noscript.css"></noscript>
-
 	<script src="https://cdn.tailwindcss.com"></script>
-
 	<style>
 		html { font-family: "Source Sans Pro", sans-serif; }
 		#bg { filter: brightness(.75) saturate(.75) blur(2px); }
@@ -31,11 +28,8 @@
 		#toast{ z-index:9999!important; }
 	</style>
 </head>
-
 <body class="is-preload">
-
 <div id="wrapper">
-
 	<header id="header">
 		<div class="logo"><span class="icon solid fa-dollar-sign"></span></div>
 		<div class="content">
@@ -53,19 +47,15 @@
 			</ul>
 		</nav>
 	</header>
-
 	<div id="main">
-
 		<article id="intro">
 			<h2 class="major">Welcome</h2>
 			<p>Track your equity holdings and cash positions in real time.</p>
 		</article>
-
 		<article id="portfolio">
 			<h2 class="major">Your Portfolio</h2>
-
 			<section id="portfolioApp" class="backdrop-blur-sm bg-white/5 border border-white/20 rounded-xl p-8 md:p-10 w-full text-gray-100 shadow-lg">
-
+				<button id="link-button" class="button primary fit mb-4">Link Bank Account</button>
 				<form id="assetForm" class="grid gap-4 md:grid-cols-2 mb-6">
 					<input id="name" type="text" placeholder="Ticker (e.g. VTI)" required class="w-full bg-white/10 border border-white/20 rounded-md p-2 placeholder-gray-400 focus:outline-none"/>
 					<select id="category" class="w-full bg-white/10 border border-white/20 rounded-md p-2 focus:outline-none">
@@ -77,9 +67,7 @@
 					<input id="purchasePrice" type="number" step="any" placeholder="Purchase Price" required class="w-full bg-white/10 border border-white/20 rounded-md p-2 placeholder-gray-400 focus:outline-none"/>
 					<button type="submit" class="md:col-span-2 button primary fit">Add Asset</button>
 				</form>
-
 				<p id="error" class="text-red-500 mb-4"></p>
-
 				<div class="overflow-x-auto">
 					<table class="min-w-full text-xs whitespace-nowrap">
 						<thead class="bg-white/10">
@@ -97,43 +85,35 @@
 						<tbody id="assetRows" class="divide-y divide-white/10"></tbody>
 					</table>
 				</div>
-
 				<div class="mt-6 text-lg">
 					Current Net-Worth:
 					<span id="networth" class="font-semibold text-emerald-400">$0</span>
 				</div>
 			</section>
 		</article>
-
 		<article id="about">
 			<h2 class="major">About</h2>
 			<p>This open-source Spring Boot app keeps equity prices in sync and shows your wealth growth.</p>
 		</article>
-
 		<article id="contact">
 			<h2 class="major">Contact</h2>
 			<p>Questions or feedback? Reach out on GitHub.</p>
 		</article>
-
 	</div>
-
 	<footer id="footer"><p>&copy; 2025 Net-Worth Tracker.</p></footer>
 </div>
-
 <div id="toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg w-[22rem] max-w-[90vw]">
 	<span id="toast-msg"></span>
 	<div id="toast-progress" class="absolute left-0 bottom-0 h-1 bg-red-400 w-full"></div>
 </div>
-
 <div id="bg"></div>
 <div id="bgOverlay"></div>
-
+<script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js"></script>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/browser.min.js"></script>
 <script src="assets/js/breakpoints.min.js"></script>
 <script src="assets/js/util.js"></script>
 <script src="assets/js/main.js"></script>
-
 <script src="assets/js/app.js"></script>
 </body>
 </html>

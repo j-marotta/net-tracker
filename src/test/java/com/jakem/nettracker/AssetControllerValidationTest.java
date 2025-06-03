@@ -1,6 +1,8 @@
 package com.jakem.nettracker;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jakem.nettracker.pricing.PriceClient;
+import com.jakem.nettracker.service.AssetService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,7 +24,13 @@ public class AssetControllerValidationTest {
     private MockMvc mockMvc;
 
     @MockBean
+    AssetService assetService;
+
+    @MockBean
     private AssetRepository assetRepository;
+
+    @MockBean
+    PriceClient priceClient;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

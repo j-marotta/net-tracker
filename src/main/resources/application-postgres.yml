@@ -15,3 +15,9 @@ spring:
   h2:
     console:
       enabled: false
+
+plaid:
+  client-id: 683f1012744d4d0023cc7987
+  secret:    de10cee3b6645d7b1c81c3a82d797f
+  url:       https://sandbox.plaid.com
+
