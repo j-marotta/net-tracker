@@ -1,15 +1,14 @@
 package com.jakem.nettracker.plaid;
 
+import com.plaid.client.model.AccountBase;
+import com.plaid.client.model.Holding;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -45,14 +44,35 @@ public class PlaidController {
 
         try {
             String accessToken = plaidService.exchangePublicToken(publicToken);
-
-            // (3) TODO: Save accessToken in your database for this user.
             return ResponseEntity.ok(Map.of("accessToken", accessToken));
-
         } catch (IOException e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Could not exchange public token: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/accounts")
+    public ResponseEntity<?> getAccounts(@RequestParam("access_token") String accessToken) {
+        try {
+            List<AccountBase> accounts = plaidService.getAccounts(accessToken);
+            return ResponseEntity.ok(accounts);
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Could not fetch accounts: " + e.getMessage()));
+        }
+    }
+
+    @GetMapping("/holdings")
+    public ResponseEntity<?> getHoldings(@RequestParam("access_token") String accessToken) {
+        try {
+            List<Holding> holdings = plaidService.getHoldings(accessToken);
+            return ResponseEntity.ok(holdings);
+        } catch (IOException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Could not fetch holdings: " + e.getMessage()));
         }
     }
 }
